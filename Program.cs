@@ -1,6 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using DotNetCoreSqlDb.Data;
+using Microsoft.ApplicationInsights.DependencyCollector;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Add Application Insights
+builder.Services.AddApplicationInsightsTelemetry();
+
+// Configure dependency tracking
+builder.Services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, o) => 
+{ 
+    module.EnableSqlCommandTextInstrumentation = true; 
+});
 
 // Add database context and cache
 if(builder.Environment.IsDevelopment())
